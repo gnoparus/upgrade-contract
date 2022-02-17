@@ -53,6 +53,45 @@ def get_contract(contract_name):
     #     "from": account}
 
 
+def upgrade(
+    account,
+    proxy,
+    new_incrementaion_address,
+    proxy_admin_contract=None,
+    initializer=None,
+    *args,
+):
+    if proxy_admin_contract:
+        if initializer:
+            encoded_function_call = encode_function_data(initializer, *args)
+            transaction = proxy_admin_contract.upgradeAndCall(
+                proxy.address,
+                new_incrementaion_address,
+                encoded_function_call,
+                {"from": account},
+            )
+        else:
+            transaction = proxy_admin_contract.upgrade(
+                proxy.address,
+                new_incrementaion_address,
+                {"from": account},
+            )
+    else:
+        if initializer:
+            encoded_function_call = encode_function_data(initializer, *args)
+            transaction = proxy.upgradeAndCall(
+                new_incrementaion_address,
+                encoded_function_call,
+                {"from": account},
+            )
+        else:
+            transaction = proxy.upgradeTo(
+                new_incrementaion_address,
+                {"from": account},
+            )
+    return transaction
+
+
 def encode_function_data(initializer=None, *args):
     if len(args) == 0 or not initializer:
         return eth_utils.to_bytes(hexstr="0x")
