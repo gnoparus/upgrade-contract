@@ -32,7 +32,9 @@ def test_proxy_upgrades():
     proxy_box = Contract.from_abi("BoxV2", proxy.address, BoxV2.abi)
 
     with pytest.raises(exceptions.VirtualMachineError):
-        proxy_box.increment({"from": account})
+        proxy_box.increment(
+            {"from": account, "gas_limit": 1000000, "allow_revert": True}
+        )
 
     upgrade_transaction = upgrade(
         account, proxy, box_v2.address, proxy_admin_contract=proxy_admin
