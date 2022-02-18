@@ -50,7 +50,6 @@ def main():
     print(f"val = {val}")
 
     box_v2 = BoxV2.deploy({"from": account})
-    initializer2 = box_v2.store, 2000
     upgrade_transaction = upgrade(
         account, proxy, box_v2.address, proxy_admin_contract=proxy_admin
     )
